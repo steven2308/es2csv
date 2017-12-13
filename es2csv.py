@@ -98,6 +98,9 @@ class Es2csv:
             terminate_after=self.opts.max_results
         )
 
+        if self.opts.no_terminate_after:
+            del search_args['terminate_after']
+
         if self.opts.doc_types:
             search_args['doc_type'] = self.opts.doc_types
 
@@ -269,6 +272,7 @@ def main():
     p.add_argument('--ca-certs', dest='ca_certs', default=None, type=str, help='Location of CA bundle.')
     p.add_argument('--client-cert', dest='client_cert', default=None, type=str, help='Location of Client Auth cert.')
     p.add_argument('--client-key', dest='client_key', default=None, type=str, help='Location of Client Cert Key.')
+    p.add_argument('--no-terminate-after', dest='no_terminate_after', action='store_true', help='Prevent query optimization even if max option is active. Default is %(default)s.')
     p.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__, help='Show version and exit.')
     p.add_argument('--debug', dest='debug_mode', action='store_true', help='Debug mode on.')
 

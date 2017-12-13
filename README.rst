@@ -55,6 +55,7 @@ Usage
   --ca-certs CA_CERTS                      Location of CA bundle.
   --client-cert CLIENT_CERT                Location of Client Auth cert.
   --client-key CLIENT_KEY                  Location of Client Cert Key.
+  --no-terminate-after                     Prevent query optimization even if max option is active
   -v, --version                            Show version and exit.
   --debug                                  Debug mode on.
   -h, --help                               show this help message and exit
@@ -131,7 +132,7 @@ With explicit Authorization
 
 .. code-block:: bash
 
-  $ es2csv -a login:password -u http://my.cool.host.com:6666/es/ -q 'host: localhost' -o database.csv 
+  $ es2csv -a login:password -u http://my.cool.host.com:6666/es/ -q 'host: localhost' -o database.csv
 
 Specifying index
 
@@ -211,6 +212,12 @@ Retrieve 2000 results in just 2 requests (two scrolls 1000 each):
 
   $ es2csv -m 2000 -s 1000 -q '*' -i twitter -o database.csv
 
+Retrieve 2000 sample results without ES terminate-after option (it will search everything first):
+
+.. code-block:: bash
+
+  $ es2csv -m 2000 --no-terminate-after -r -q '{"query": {"function_score": {"functions": [{"random_score": {"seed": "0"} } ] } } }' -i twitter -o database.csv
+
 Changing column delimiter in CSV file, by default ','
 
 .. code-block:: bash
@@ -231,7 +238,7 @@ An JSON document example
     "title": "Nest eggs",
     "body":  "Making your money work...",
     "tags":  [ "cash", "shares" ],
-    "comments": [ 
+    "comments": [
       {
         "name":    "John Smith",
         "comment": "Great article",
