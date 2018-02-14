@@ -56,6 +56,7 @@ Usage
   --client-cert CLIENT_CERT                Location of Client Auth cert.
   --client-key CLIENT_KEY                  Location of Client Cert Key.
   --no-terminate-after                     Prevent query optimization even if max option is active
+  --replace-line-breaks                    Replaces line breaks for spaces in all string values
   -v, --version                            Show version and exit.
   --debug                                  Debug mode on.
   -h, --help                               show this help message and exit

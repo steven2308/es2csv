@@ -215,6 +215,15 @@ class Es2csv:
                     tmp_file.write('%s\n' % json.dumps(out))
         tmp_file.close()
 
+    def get_value(self, v):
+        if isinstance(v, unicode):
+            if self.opts.replace_line_breaks:
+                return v.replace('\n', ' ').replace('\r', '').encode('utf8')
+            else:
+                return v.encode('utf8')
+        else:
+            return v
+
     def write_to_csv(self):
         if self.num_results > 0:
             self.num_results = sum(1 for line in open(self.tmp_file, 'r'))
@@ -237,7 +246,10 @@ class Es2csv:
                     timer += 1
                     bar.update(timer)
                     line_as_dict = json.loads(line)
-                    line_dict_utf8 = {k: v.encode('utf8') if isinstance(v, unicode) else v for k, v in line_as_dict.items()}
+                    line_dict_utf8 = {
+                        k: self.get_value(v)
+                        for k, v in line_as_dict.items()
+                    }
                     csv_writer.writerow(line_dict_utf8)
                 output_file.close()
                 bar.finish()
@@ -273,6 +285,7 @@ def main():
     p.add_argument('--client-cert', dest='client_cert', default=None, type=str, help='Location of Client Auth cert.')
     p.add_argument('--client-key', dest='client_key', default=None, type=str, help='Location of Client Cert Key.')
     p.add_argument('--no-terminate-after', dest='no_terminate_after', action='store_true', help='Prevent query optimization even if max option is active. Default is %(default)s.')
+    p.add_argument('--replace-line-breaks', dest='replace_line_breaks', action='store_true', help='Replaces line breaks for spaces in all string values. Default is %(default)s.')
     p.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__, help='Show version and exit.')
     p.add_argument('--debug', dest='debug_mode', action='store_true', help='Debug mode on.')
 
